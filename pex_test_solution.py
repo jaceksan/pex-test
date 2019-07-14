@@ -294,7 +294,7 @@ def report_results(results, result_dir):
         print('-- duration: {}'.format(result['duration']))
 
         if result['phase']['query_type'] == 'select':
-            result_file_name = Path(__file__) / result_dir / '{}.csv'.format(result['query_name'])
+            result_file_name = Path(result_dir) / '{}.csv'.format(result['query_name'])
             print('-- result_file_name: {}'.format(result_file_name))
             with open(result_file_name, 'w') as fp:
                 for line in result['result']:
@@ -305,7 +305,7 @@ def execute_host(host, config, args, cancel_event, result_dir):
     conn = None
     results = []
     config_database = config['database']
-    result_host_dir = Path(__file__) / result_dir / host
+    result_host_dir = Path(result_dir) / host
     create_dir(result_host_dir)
     try:
         info('START host={}'.format(host))
