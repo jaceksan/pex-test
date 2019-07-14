@@ -225,6 +225,7 @@ I am sure, there can be much more attributes (dimensions), e.g.:
   - min, max, avg, median, percentiles (80, 90, 95, ...)
 - report by additional attributes 
 - Correlation between facts (views, likes, ...) by relevant attributes 
+  - predict trendy videos
 - Trending videos / users
   - in last hour, day, week
 
@@ -238,7 +239,7 @@ I would consider to limit the history, where to MERGE, e.g. to 1 year.
 
 ## Timeseries
 
-There are no records for edge of days.
+There are no records for edges of days.
 
 Example:
 
@@ -249,8 +250,10 @@ Example:
 
 Does this mean, that diff of views (10) should be summed up into day 2019-01-01 or 2019-01-02?
 
-We could use TIMESERIES clause (Vertica specific) and linear interpolation to generate rows for each edge of the day.
-Now I sum up diff between current and previous row into the following day.
+We could use TIMESERIES clause (Vertica specific) and [linear interpolation](https://www.vertica.com/docs/9.2.x/HTML/Content/Authoring/AnalyzingData/TimeSeries/LinearInterpolation.htm?zoom_highlight=linear) 
+to generate rows for each edge of the day.
+
+In current solution I sum up diff between current and previous row into the following day.
 
 The same could be applied to reports by hour.
 
@@ -261,13 +264,12 @@ The same could be applied to reports by hour.
 
 Best practice is to partition table by day / month and move partition older than X into archive tables (fast DDL operation).
 It helps to MERGE (see chapter [Incremental loads](#incremental-loads)) to do not degrade in time.
-Newest feature is so called hierarchical partitioning (by day up to 1 month, by month up to 1 year, ...), which brings additional (Vertica specific) benefits.
+Newest feature is so called hierarchical partitioning (e.g. by day up to 1 month, by month up to 1 year, ...), which brings additional (Vertica specific) benefits.
 
 ## Optimize projections
 
-Projections in Vertica are quite similar to indexes
-
-## Secondary projections
+Projections in Vertica are quite similar to indexes.
+With 10+ or even 100+ types of reports aggregating data by different sets of columns, many SQLs would be suboptimal.
 
 To satisfy additional reports (see also chapter [New reports examples](#new-reports-examples)), it would be wise to create additional projections.
 
@@ -276,6 +278,9 @@ Obviously materializing more projections means significant overhead during data 
 On the other hand incremental load helps to reduce the overhead.
 
 All projections must contain MERGE key, if MERGE is used, so MERGE is still optimized.
+
+Also there is so called [DB Designer tool](https://www.vertica.com/docs/9.2.x/HTML/Content/Authoring/AdministratorsGuide/ConfiguringTheDB/PhysicalSchema/DBD/AboutDatabaseDesigner.htm) in Vertica, 
+which can help with optimal projection design.
 
 ## Encapsulate the tool into docker container
 
