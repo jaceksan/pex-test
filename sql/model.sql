@@ -32,6 +32,11 @@ create /*+ label(create_table_youtube_history_denorm) */ table youtube_history_d
     created_at timestamptz, -- timestamp when video was uploaded to YouTube
     duration int, -- length of the video in seconds
     day_updated_at date not null,
+    hour int,
+    views_diff int, -- diff from previous record (same gid by updated_at)
+    likes_diff int,
+    dislikes_diff int,
+    comments_diff int,
     constraint pk_youtube_history_denorm primary key (category_id, gid, day_updated_at, updated_at)
 )
 order by category_id, gid, day_updated_at, updated_at

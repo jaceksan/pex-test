@@ -7,7 +7,7 @@ I followed the instructions from file [analyst_challenge_instructions.sql](analy
 3. how many videos within each category have < 1k views, 1-10K, 10-100K, 100k-1M, 1M+ views
    (additionally please provide any other insights you find relevant)
 
-First I loaded data manually and did few checks, see sql/checks.sql file for more details.
+First I loaded data manually and did few checks, see [checks.sql](sql/checks.sql) file for more details.
 
 Findings:
 
@@ -16,7 +16,7 @@ Findings:
 - There is strict referential integrity between meta and history
 - Value of a fact can be reduced, e.g. number of views
 - There can be many rows for certain video(GID) for one day
-- All videos created(uploaded) in 2018-06-01 day, there is history for the following 7 days (including creation day)
+- All videos are created(uploaded) in 2018-06-01 day, there is history for the following 7 days (including creation day)
 - There are cca 1/2 of rows in history without change of any fact
 - There are no rows on the edge of each day
   - Question is, if facts diff (from previous row) should be calculated into previous or following day
@@ -39,13 +39,16 @@ I wanted to achieve the following objectives:
 - Multi-threading
 - Executable on localhost
 
-So I implemented a [python tool](pex_test_solution.py) with [configuration](pex_test_solution.yaml) and prepared [Dockerfile](Dockerfile) for Vertica.
+So I implemented a [python tool](pex_test_solution.py) with [configuration](pex_test_solution.yaml) 
+and prepared [Dockerfile](Dockerfile) / [docker-compose](docker-compose.yaml) for Vertica.
 
 How to prepare environment:
 
 ```bash
 # Install python3 and:
 sudo pip install configparser pathlib PyYAML vertica-python
+
+# See also section "Follow-ups
 ```
 
 How to run:
@@ -63,7 +66,7 @@ cd pex-test
 ./pex_test_solution.py
 
 # Run the tool from certain phase (only reports)
-./pex_test_solution.py -ph report
+./pex_test_solution.py -ph report --skip-init-db
 
 # Display full help
 ./pex_test_solution.py --help
@@ -82,7 +85,7 @@ order by start_timestamp desc limit 10;
 ```
 
 Whole ETL including reports execution is running below 30 seconds on 16GB RAM / 4 cores laptop.
-TODO - hor-dss-v03.
+I executed the tool on 4-node cluster and it scales with number of nodes pretty well.
 
 
 ## Model
@@ -101,7 +104,7 @@ For history I had to use FILLER mechanism and translate "" into valid INTEGER.
 ## ETL
 
 - [denorm.sql](sql/denorm.sql)
-- (pre_agg.sql)[sql/pre_agg.sql)
+- [pre_agg.sql](sql/pre_agg.sql)
 
 Denormalize model to get rid of JOINs in reports.
 Pre-aggregate by day to improve performance of any daily report.
@@ -127,9 +130,48 @@ Each report uses most optimal table filled by the ETL part.
 
 - [Google spreadsheet with results](https://docs.google.com/spreadsheets/d/1-ZPGfndSkD0uY5qyJ3G3Ixtgmkf9FPqFFhlq3ECtyRs/edit#gid=0)
 
-There are three sheets solving the related tasks from [analyst challenge instructions.sql](analyst_challenge_instructions.sql).
+There are four sheets solving the related tasks from [analyst challenge instructions.sql](analyst_challenge_instructions.sql) + 1 additional (task 4).
 
 # Follow-ups
+
+## Support more video providers
+
+I suggest to split gid column into 2 columns - provider_id and video_id.
+Just I am not sure, if this is doable in case of other providers.
+
+It would be great to co-locate data of more providers in unified data model.
+Some attributes could be empty, columnar DB engine would absorb it well.
+Just relaxing data types could be a challenge. 
+
+## Additional facts / attributes
+
+Current data is really minimalistic. 
+
+I am not sure, if in this industry there can be more facts.
+
+I am sure, there can be much more attributes (dimensions), e.g.:
+
+- user
+  - name
+  - age
+  - address (geo location)
+- video
+  - geo location (video uploaded from, video recorded in)
+  - device id / manufacturer
+  - resolution / fps
+- category
+  - more categories
+  - category trees
+  
+## New reports examples
+
+- More metrics
+  - min, max, avg, median, percentiles (80, 90, 95, ...)
+- report by additional attributes 
+- Correlation between facts (views, likes, ...) by relevant attributes 
+- Trending videos / users
+  - in last hour, day, week
+
 
 ## Incremental loads
 
@@ -155,11 +197,6 @@ Now I sum up diff between current and previous row into the following day.
 
 The same could be applied to reports by hour.
 
-## Materialize diffs
-
-In denorm.sql I calculate diffs between current and previous rows to exclude rows without change of any fact.
-We could materialize the diffs and use them for various reports.
-
 ## Partitioning
 
 - archiving / purging data
@@ -175,6 +212,10 @@ Projections in Vertica are quite similar to indexes
 
 ## Secondary projections
 
-# Links
+To satisfy additional reports (see also previous chapter), it would be wise to create additional projections.
 
-[1]: analyst_challenge_instructions.sql
+The key is to find minimal number of sets of columns, which are used for reporting (aggregation, windowing functions), to minimize number of projections.
+Obviously materializing more projections means significant overhead during data ingestion.
+On the other hand incremental load helps to reduce the overhead.
+
+All projections must contain MERGE key, if MERGE is used, so MERGE is still optimized.

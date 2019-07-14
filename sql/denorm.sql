@@ -10,11 +10,13 @@ join youtube_history h
 insert /*+ direct,label(youtube_history_denorm_p2) */ into youtube_history_denorm
 select
   gid, views, likes, dislikes, comments, updated_at,
-  user_id, category_id, created_at, duration, day_updated_at
+  user_id, category_id, created_at, duration, day_updated_at,
+  hour, views_diff, likes_diff, dislikes_diff, comments_diff
 from (
   select
     gid, views, likes, dislikes, comments, updated_at,
     user_id, category_id, created_at, duration, day_updated_at,
+    extract('hour' from updated_at) as hour,
     views - nvl(lag(views) over (w1), 0) as views_diff,
     likes - nvl(lag(likes) over (w1), 0) as likes_diff,
     dislikes - nvl(lag(dislikes) over (w1), 0) as dislikes_diff,

@@ -54,3 +54,15 @@ from (
 group by total_likes_group, category_id
 order by total_likes_group, category_id
 ;
+
+select /*+ label(report_task_4) */
+  h.category_id, h.hour,
+  sum(h.views) as total_views,
+  sum(h.likes) as total_likes,
+  sum(h.dislikes) as total_dislikes,
+  sum(h.comments) as total_comments
+from youtube_history_denorm h
+where updated_at > date '2018-06-08' - interval '7 day'
+group by h.category_id, h.hour
+order by total_views desc
+;
