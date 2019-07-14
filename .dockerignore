@@ -1,0 +1,16 @@
+.idea
+*.iml
+*.pyc
+.tox
+*.egg-info
+*.egg
+.eggs
+*.orig
+build
+dist
+packages
+rpm_build.properties
+junit*
+.coverage
+sources
+pylint.log

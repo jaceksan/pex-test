@@ -1,0 +1,59 @@
+---
+database:
+  port: 5433
+  user: vertica
+  password: ''
+  dbname: verticadb
+  timeout: 86400
+  resource_pools:
+    - pool_name: 'etl_pool'
+      maxmemorysize: '4G'
+      maxconcurrency: 2
+      plannedconcurrency: 2
+    - pool_name: 'report_pool'
+      maxmemorysize: '4G'
+      maxconcurrency: 4
+      plannedconcurrency: 4
+  schema_name: pex_test
+
+hosts:
+  - localhost
+
+results:
+  directory: 'results'
+
+sql_pipeline:
+  - name: 'model'
+    sql_file: 'sql/model.sql'
+    pool_name: 'etl_pool'
+    query_type: 'ddl'
+  - name: 'load'
+    sql_file: 'sql/load.sql'
+    pool_name: 'etl_pool'
+    query_type: 'load'
+    parallel: '2'
+    analyze_tables:
+      - 'youtube_meta'
+      - 'youtube_history'
+    analyze_constraints:
+      - 'youtube_meta'
+      - 'youtube_history'
+  - name: 'denorm'
+    sql_file: 'sql/denorm.sql'
+    pool_name: 'etl_pool'
+    query_type: 'dml'
+    analyze_tables:
+      - 'youtube_history_denorm'
+  - name: 'pre_agg'
+    sql_file: 'sql/pre_agg.sql'
+    pool_name: 'etl_pool'
+    query_type: 'dml'
+    parallel: '2'
+    analyze_tables:
+      - 'youtube_history_denorm_latest'
+      - 'youtube_history_denorm_daily'
+  - name: 'report'
+    sql_file: 'sql/reports.sql'
+    parallel: '4'
+    pool_name: 'report_pool'
+    query_type: 'select'

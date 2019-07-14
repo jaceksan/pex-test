@@ -1,0 +1,25 @@
+---
+version: '2'
+services:
+  vertica:
+    image: "vertica-pex-test"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "5433:5433"
+    networks:
+      - base-nw
+    volumes:
+      - vertica_single_volume:/home/vertica/verticadb_single:z
+      - ./.docker-compose/vertica_scripts:/docker-entrypoint-initdb.d/
+
+networks:
+  base-nw:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.216.0.0/16
+
+volumes:
+  vertica_single_volume:
