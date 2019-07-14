@@ -46,6 +46,12 @@ I wanted to achieve the following objectives:
 So I implemented a [python tool](pex_test_solution.py) with [configuration](pex_test_solution.yaml) 
 and prepared [Dockerfile](Dockerfile) / [docker-compose](docker-compose.yaml) for Vertica.
 
+# Presentation of results
+
+- [Google spreadsheet with results](https://docs.google.com/spreadsheets/d/1-ZPGfndSkD0uY5qyJ3G3Ixtgmkf9FPqFFhlq3ECtyRs/edit#gid=0)
+
+There are four sheets solving the related tasks from [analyst challenge instructions.sql](analyst_challenge_instructions.sql) + 1 additional (task 4).
+
 # User documentation
 
 Install python3, if necessary, and additional python modules:
@@ -119,13 +125,13 @@ order by start_timestamp desc limit 10;
 
 Whole ETL including reports is running below 30 seconds on 16GB RAM / 4 cores laptop.
 
-I executed the tool on 4-node cluster and it scales with number of nodes pretty well.
+I executed the tool on 4-node cluster too and it scales with number of nodes pretty well.
 
 Only report queries are running circa 1 second (parallel 4), no single query duration exceeds 300 ms. 
 
 # Solution design
 
-The tool reads YAML config and executes phase of SQL pipeline in required order.
+The tool reads YAML config and executes phases of SQL pipeline in required order.
 
 The tool creates schema and setup DB session before starting SQL pipeline.
 
@@ -139,7 +145,7 @@ The tool distinguish various types of queries and can execute custom actions for
 - DDL - remove label, it is not supported for DDLs in Vertica
 
 The tool reports progress during execution.
-Finally it reports stats for each executed report to STDOUT.
+Finally it reports stats for each executed query to STDOUT.
 Results of SELECTs are stored in csv files.
 
 ## Model
@@ -152,7 +158,9 @@ Initial data model + tables used by ETL.
 
 - [load.sql](sql/load.sql)
 
-Very poorly formatted CSV files as a input.
+Loads input files.
+
+Very poorly formatted CSV files as an input.
 For history I had to use FILLER mechanism and translate "" into valid INTEGER.
 
 ## ETL
@@ -176,15 +184,9 @@ It should be done incrementally, see chapter [Follow-ups/Incremental loads](#inc
 
 - [reports.sql](sql/reports.sql)
 
-Reports solving tasks from instructions.
+Reports solving tasks from the instructions.
 
 Each report uses most optimal table filled by the ETL part.
-
-# Presentation of results
-
-- [Google spreadsheet with results](https://docs.google.com/spreadsheets/d/1-ZPGfndSkD0uY5qyJ3G3Ixtgmkf9FPqFFhlq3ECtyRs/edit#gid=0)
-
-There are four sheets solving the related tasks from [analyst challenge instructions.sql](analyst_challenge_instructions.sql) + 1 additional (task 4).
 
 # Follow-ups
 
