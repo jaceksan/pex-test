@@ -1,6 +1,6 @@
 # Investigation
 
-I followed the instructions from file [analyst challenge instructions.sql](analyst challenge instructions.sql):
+I followed the instructions from file [analyst_challenge_instructions.sql](analyst_challenge_instructions.sql):
 
 1. total views accrued within each category
 2. graph of daily views for an 'average' video within each category
@@ -127,7 +127,7 @@ Each report uses most optimal table filled by the ETL part.
 
 - [Google spreadsheet with results](https://docs.google.com/spreadsheets/d/1-ZPGfndSkD0uY5qyJ3G3Ixtgmkf9FPqFFhlq3ECtyRs/edit#gid=0)
 
-There are three sheets solving the related tasks from [analyst challenge instructions.sql](analyst challenge instructions.sql).
+There are three sheets solving the related tasks from [analyst challenge instructions.sql](analyst_challenge_instructions.sql).
 
 # Follow-ups
 
@@ -177,4 +177,4 @@ Projections in Vertica are quite similar to indexes
 
 # Links
 
-[1]: analyst challenge instructions.sql
+[1]: analyst_challenge_instructions.sql
