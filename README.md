@@ -1,4 +1,4 @@
-# Investigation
+# Initial investigation
 
 I followed the instructions from file [analyst_challenge_instructions.sql](analyst_challenge_instructions.sql):
 
@@ -50,9 +50,11 @@ and prepared [Dockerfile](Dockerfile) / [docker-compose](docker-compose.yaml) fo
 
 - [Google spreadsheet with results](https://docs.google.com/spreadsheets/d/1-ZPGfndSkD0uY5qyJ3G3Ixtgmkf9FPqFFhlq3ECtyRs/edit#gid=0)
 
-There are four sheets solving the related tasks from [analyst challenge instructions.sql](analyst_challenge_instructions.sql) + 1 additional (task 4).
+There are four sheets solving the 3 tasks from [analyst challenge instructions.sql](analyst_challenge_instructions.sql) + 1 additional (task 4).
 
 # User documentation
+
+## Prepare environment
 
 Install python3, if necessary, and additional python modules:
 
@@ -62,7 +64,7 @@ sudo pip install configparser pathlib PyYAML vertica-python
 
 ```
 
-See also chapter [Encapsulate the tool into docker container](#encapsulate-the-tool-into-docker-container)
+See also chapter [Follow-ups/Encapsulate the tool into docker container](#encapsulate-the-tool-into-docker-container)
 
 Download Vertica RPM. Registration is needed, so I uploaded it into the G-drive, where presentation of results is stored as well.
 
