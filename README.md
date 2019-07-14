@@ -7,6 +7,10 @@ I followed the instructions from file [analyst_challenge_instructions.sql](analy
 3. how many videos within each category have < 1k views, 1-10K, 10-100K, 100k-1M, 1M+ views
    (additionally please provide any other insights you find relevant)
 
+Additionally I implemented the following report:
+
+1. hourly views within each category for last 7 days 
+
 First I loaded data manually and did few checks, see [checks.sql](sql/checks.sql) file for more details.
 
 Findings:
@@ -15,11 +19,11 @@ Findings:
   - see chapter [Solution description/Load](#load) for more details
 - There is strict referential integrity between meta and history
 - Value of a fact can be reduced, e.g. number of views
-- There can be many rows for certain video(GID) for one day
-- All videos are created(uploaded) in 2018-06-01 day, there is history for the following 7 days (including creation day)
+- There can be many rows for certain video(GID) in one day
+- All videos are created(uploaded) in 2018-06-01 day, history contains the following 7 days (including creation day)
 - There are cca 1/2 of rows in history without change of any fact
 - There are no rows on the edge of each day
-  - Question is, if facts diff (from previous row) should be calculated into previous or following day
+  - Question is, if facts diff (comparing to previous row) should be calculated into previous or following day
   - See chapter [Follow-ups/Timeseries](#timeseries) for more details
 
 # Solution description
@@ -34,7 +38,7 @@ I use Vertica database, because:
 
 I wanted to achieve the following objectives:
 
-- Separate SQL
+- Separate SQL code
 - Configurability
 - Multi-threading
 - Executable on localhost
@@ -42,29 +46,35 @@ I wanted to achieve the following objectives:
 So I implemented a [python tool](pex_test_solution.py) with [configuration](pex_test_solution.yaml) 
 and prepared [Dockerfile](Dockerfile) / [docker-compose](docker-compose.yaml) for Vertica.
 
-## Prepare environment
+# User documentation
 
-Install python3, if necessary and additional modules:
+Install python3, if necessary, and additional python modules:
 
 ```bash
 # Install python3 and:
 sudo pip install configparser pathlib PyYAML vertica-python
 
-# See also section "Follow-ups
 ```
+
+See also chapter [Encapsulate the tool into docker container](#encapsulate-the-tool-into-docker-container)
 
 Download Vertica RPM. Registration is needed, so I uploaded it into the G-drive, where presentation of results is stored as well.
 
 [Vertica 9.2.1 community edition](https://drive.google.com/open?id=1ra0S97MVgCkUFJt-Yxmdg_B4W0E4_doJ)
 
-Clone repository with the tool and start Vertica container:
+Clone repository containing the tool and start Vertica container:
 
 ```bash
 # Run Vertica
 git clone git@github.com:jaceksan/pex-test.git
 ```
 
-How to run the tool:
+Download CSV files containing data from the drive shared by you, into directory "data":
+
+- [analyst_challenge_data_meta.csv](https://drive.google.com/open?id=1jvl5t2q4LwDHqSTL2ZWHvtU9tsqZq3z4)
+- [analyst_challenge_data_history.csv](https://drive.google.com/open?id=1JWTn91IBTxDBxFJlShCo9Qscka1hnax4)
+
+## Run the tool
 
 ```bash
 # Run Vertica
@@ -77,7 +87,7 @@ cd pex-test
 # Run the tool (ETL + reports)
 ./pex_test_solution.py
 
-# Run the tool from certain phase (only reports)
+# Run the tool from certain phase (in this example run only reports)
 ./pex_test_solution.py -ph report --skip-init-db
 
 # Display full help
@@ -86,7 +96,15 @@ cd pex-test
 
 It is possible to tune [configuration](pex_test_solution.yaml), e.g. amount of memory available for queries, parallelism, ...
 
+## Results
+
 Results (csv files) are generated into results/<hostname from config>/<query label>.csv.
+
+Results and be copied into a sheet, then use "split to columns" feature.
+
+
+
+## Investigation
 
 (Not only) All report (SELECT) queries are labelled (/*+ label(<label text>) */, so they can be tracked inside Vertica, e.g.:
 ```sql92
@@ -99,6 +117,24 @@ order by start_timestamp desc limit 10;
 Whole ETL including reports execution is running below 30 seconds on 16GB RAM / 4 cores laptop.
 I executed the tool on 4-node cluster and it scales with number of nodes pretty well.
 
+# Solution design
+
+The tool reads YAML config and executes phase of SQL pipeline in required order.
+
+The tool creates schema and setup DB session before starting SQL pipeline.
+
+The tool can execute queries in parallel (multi-threading), if required in the config.
+
+The tool distinguish various types of queries and can execute custom actions for each type:
+
+- COPY (load) - analyze statistics and constraints
+- SELECT - fetch results and store them into csv file
+- DML - execute commit 
+- DDL - remove label, it is not supported for DDLs in Vertica
+
+The tool reports progress during execution.
+Finally it reports stats for each executed report to STDOUT.
+Results of SELECTs are stored in csv files.
 
 ## Model
 
@@ -232,3 +268,5 @@ Obviously materializing more projections means significant overhead during data 
 On the other hand incremental load helps to reduce the overhead.
 
 All projections must contain MERGE key, if MERGE is used, so MERGE is still optimized.
+
+## Encapsulate the tool into docker container
