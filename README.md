@@ -198,9 +198,10 @@ There are no records for edge of days.
 
 Example:
 
-||gid||updated_at||views||
-|1|2019-01-01 23:00:00|10|
-|1|2019-01-02 01:00:00|20|
+| gid           | updated_at          | views |
+| ------------- |:-------------------:| -----:|
+| 1             | 2019-01-01 23:00:00 | 10    |
+| 1             | 2019-01-02 01:00:00 | 20    |
 
 Does this mean, that diff of views (10) should be summed up into day 2019-01-01 or 2019-01-02?
 
