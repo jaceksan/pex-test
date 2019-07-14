@@ -98,7 +98,7 @@ It is possible to tune [configuration](pex_test_solution.yaml), e.g. amount of m
 
 ## Results
 
-Results (csv files) are generated into results/<hostname from config>/<query label>.csv.
+Results (csv files) are generated into results/<<hostname from config>>/<<query label>>.csv.
 
 Results and be copied into a sheet, then use "split to columns" feature.
 
@@ -270,3 +270,8 @@ On the other hand incremental load helps to reduce the overhead.
 All projections must contain MERGE key, if MERGE is used, so MERGE is still optimized.
 
 ## Encapsulate the tool into docker container
+
+Instead of installing python3 and additional modules into host environment, we should create second container for the tool.
+We would need additional Dockerfile, setup.py and extend docker-compose.yaml.
+
+As a workaround you can use virtualenv.
