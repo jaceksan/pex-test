@@ -42,7 +42,9 @@ I wanted to achieve the following objectives:
 So I implemented a [python tool](pex_test_solution.py) with [configuration](pex_test_solution.yaml) 
 and prepared [Dockerfile](Dockerfile) / [docker-compose](docker-compose.yaml) for Vertica.
 
-How to prepare environment:
+## Prepare environment
+
+Install python3, if necessary and additional modules:
 
 ```bash
 # Install python3 and:
@@ -51,11 +53,21 @@ sudo pip install configparser pathlib PyYAML vertica-python
 # See also section "Follow-ups
 ```
 
-How to run:
+Download Vertica RPM. Registration is needed, so I uploaded it into the G-drive, where presentation of results is stored as well.
+
+[Vertica 9.2.1 community edition](https://drive.google.com/open?id=1ra0S97MVgCkUFJt-Yxmdg_B4W0E4_doJ)
+
+Clone repository with the tool and start Vertica container:
 
 ```bash
 # Run Vertica
 git clone git@github.com:jaceksan/pex-test.git
+```
+
+How to run the tool:
+
+```bash
+# Run Vertica
 cd pex-test
 docker-compose up
 # Vertica stays running until CTRL+C is pressed (or kill signal is sent from outside)
