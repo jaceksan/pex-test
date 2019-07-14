@@ -1,6 +1,6 @@
 # Investigation
 
-I followed the instructions from file (analyst challenge instructions.sql)[analyst challenge instructions.sql]:
+I followed the instructions from file [analyst challenge instructions.sql](analyst challenge instructions.sql):
 
 1. total views accrued within each category
 2. graph of daily views for an 'average' video within each category
@@ -39,7 +39,7 @@ I wanted to achieve the following objectives:
 - Multi-threading
 - Executable on localhost
 
-So I implemented a (python tool)[pex_test_solution.py] with (configuration)[pex_test_solution.yaml] and prepared (Dockerfile)[Dockerfile] for Vertica.
+So I implemented a [python tool](pex_test_solution.py) with [configuration](pex_test_solution.yaml) and prepared [Dockerfile](Dockerfile) for Vertica.
 
 How to prepare environment:
 
@@ -69,7 +69,7 @@ cd pex-test
 ./pex_test_solution.py --help
 ```
 
-It is possible to tune (configuration)[pex_test_solution.yaml], e.g. amount of memory available for queries, parallelism, ...
+It is possible to tune [configuration](pex_test_solution.yaml), e.g. amount of memory available for queries, parallelism, ...
 
 Results (csv files) are generated into results/<hostname from config>/<query label>.csv.
 
@@ -87,21 +87,21 @@ TODO - hor-dss-v03.
 
 ## Model
 
-- (model.sql)[sql/model.sql]
+- [model.sql](sql/model.sql)
 
 Initial data model + tables used by ETL.
 
 ## Load
 
-- (load.sql)[sql/load.sql]
+- [load.sql](sql/load.sql)
 
 Very poorly formatted CSV files as a input.
 For history I had to use FILLER mechanism and translate "" into valid INTEGER.
 
 ## ETL
 
-- (denorm.sql)[sql/denorm.sql)
-- (pre_agg.sql)[sql/pre_agg.sql]
+- [denorm.sql](sql/denorm.sql)
+- (pre_agg.sql)[sql/pre_agg.sql)
 
 Denormalize model to get rid of JOINs in reports.
 Pre-aggregate by day to improve performance of any daily report.
@@ -117,7 +117,7 @@ It should be done incrementally, see chapter "Follow-ups/Incremental loads".
 
 ## Reports
 
-- (reports.sql)[sql/reports.sql]
+- [reports.sql](sql/reports.sql)
 
 Reports solving tasks from instructions.
 
@@ -125,9 +125,9 @@ Each report uses most optimal table filled by the ETL part.
 
 # Presentation of results
 
-- (Google spreadsheet with results)[https://docs.google.com/spreadsheets/d/1-ZPGfndSkD0uY5qyJ3G3Ixtgmkf9FPqFFhlq3ECtyRs/edit#gid=0]
+- [Google spreadsheet with results](https://docs.google.com/spreadsheets/d/1-ZPGfndSkD0uY5qyJ3G3Ixtgmkf9FPqFFhlq3ECtyRs/edit#gid=0)
 
-There are three sheets solving the related tasks from (analyst challenge instructions.sql)[analyst challenge instructions.sql].
+There are three sheets solving the related tasks from [analyst challenge instructions.sql](analyst challenge instructions.sql).
 
 # Follow-ups
 
