@@ -98,13 +98,14 @@ It is possible to tune [configuration](pex_test_solution.yaml), e.g. amount of m
 
 ## Results
 
-Results (csv files) are generated into results/<<hostname from config>>/<<query label>>.csv.
+Results (csv files) are generated into results/$hostname_from_config/$query_label.csv.
 
 Results and be copied into a sheet, then use "split to columns" feature.
 
 
-
 ## Investigation
+
+You can either install vertica client RPM or any SQL client, e.g. Dbeaver, and setup connection to Vertica.
 
 (Not only) All report (SELECT) queries are labelled (/*+ label(<label text>) */, so they can be tracked inside Vertica, e.g.:
 ```sql92
@@ -114,8 +115,13 @@ where request_label = 'report_task_3'
 order by start_timestamp desc limit 10;
 ```
 
+## Performance 
+
 Whole ETL including reports execution is running below 30 seconds on 16GB RAM / 4 cores laptop.
+
 I executed the tool on 4-node cluster and it scales with number of nodes pretty well.
+
+Only report queries are running circa 1 second (parallel 4), no single query duration exceeds 300 ms. 
 
 # Solution design
 
