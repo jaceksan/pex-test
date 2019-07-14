@@ -117,7 +117,7 @@ order by start_timestamp desc limit 10;
 
 ## Performance 
 
-Whole ETL including reports execution is running below 30 seconds on 16GB RAM / 4 cores laptop.
+Whole ETL including reports is running below 30 seconds on 16GB RAM / 4 cores laptop.
 
 I executed the tool on 4-node cluster and it scales with number of nodes pretty well.
 
