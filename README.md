@@ -1,6 +1,6 @@
 # Investigation
 
-I followed the instructions from file [analyst challenge instructions.sql][1]:
+I followed the instructions from file [analyst challenge instructions.sql](analyst challenge instructions.sql):
 
 1. total views accrued within each category
 2. graph of daily views for an 'average' video within each category
