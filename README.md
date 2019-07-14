@@ -135,9 +135,11 @@ Only report queries are running circa 1 second (parallel 4), no single query dur
 
 The tool reads YAML config and executes phases of SQL pipeline in required order.
 
-The tool creates schema and setup DB session before starting SQL pipeline.
+It creates schema and setup DB session before starting SQL pipeline.
 
-The tool can execute queries in parallel (multi-threading), if required in the config.
+It can execute queries in parallel (multi-threading), if required in the config.
+
+It can be configured to execute the pipeline against more hosts, e.g. to compare performance.
 
 The tool distinguish various types of queries and can execute custom actions for each type:
 
@@ -290,3 +292,8 @@ Instead of installing python3 and additional modules into host environment, we s
 We would need additional Dockerfile, setup.py and extend docker-compose.yaml.
 
 As a workaround you can use virtualenv.
+
+## Support other database engines
+
+It should be quite easy to extend the tool to support e.g. PostgreSQL.
+Then the tool could be executed against more hosts.
