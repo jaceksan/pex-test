@@ -1,6 +1,6 @@
 # Investigation
 
-I followed the instructions from file [analyst challenge instructions.sql](analyst challenge instructions.sql):
+I followed the instructions from file [analyst challenge instructions.sql][1]:
 
 1. total views accrued within each category
 2. graph of daily views for an 'average' video within each category
@@ -175,3 +175,6 @@ Projections in Vertica are quite similar to indexes
 
 ## Secondary projections
 
+# Links
+
+[1]: analyst challenge instructions.sql
