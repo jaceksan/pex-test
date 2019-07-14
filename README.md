@@ -12,7 +12,7 @@ First I loaded data manually and did few checks, see [checks.sql](sql/checks.sql
 Findings:
 
 - Input files are very poorly formatted CSV files
-  - see chapter "Solution description/Load" for more details
+  - see chapter [Solution description/Load](#load) for more details
 - There is strict referential integrity between meta and history
 - Value of a fact can be reduced, e.g. number of views
 - There can be many rows for certain video(GID) for one day
@@ -20,7 +20,7 @@ Findings:
 - There are cca 1/2 of rows in history without change of any fact
 - There are no rows on the edge of each day
   - Question is, if facts diff (from previous row) should be calculated into previous or following day
-  - See chapter "Follow-ups/Timeseries" for more details
+  - See chapter [Follow-ups/Timeseries](#timeseries) for more details
 
 # Solution description
 
@@ -128,7 +128,7 @@ See also clauses ORDER BY / SEGMENTED BY in model.sql - they are kind of indexes
 In denorm.sql I calculate diffs between current and previous rows to exclude rows, which do not contain change of any fact -
 reducing rows to circa 1/2.
 
-It should be done incrementally, see chapter "Follow-ups/Incremental loads".
+It should be done incrementally, see chapter [Follow-ups/Incremental loads](#incremental-loads).
 
 ## Reports
 
@@ -215,7 +215,7 @@ The same could be applied to reports by hour.
 - partition pruning
 
 Best practice is to partition table by day / month and move partition older than X into archive tables (fast DDL operation).
-It helps to MERGE (see chapter "Incremental loads") to do not degrade in time.
+It helps to MERGE (see chapter [Incremental loads](#incremental-loads)) to do not degrade in time.
 Newest feature is so called hierarchical partitioning (by day up to 1 month, by month up to 1 year, ...), which brings additional (Vertica specific) benefits.
 
 ## Optimize projections
@@ -224,7 +224,7 @@ Projections in Vertica are quite similar to indexes
 
 ## Secondary projections
 
-To satisfy additional reports (see also previous chapter), it would be wise to create additional projections.
+To satisfy additional reports (see also chapter [New reports examples](#new-reports-examples)), it would be wise to create additional projections.
 
 The key is to find minimal number of sets of columns, which are used for reporting (aggregation, windowing functions), to minimize number of projections.
 Obviously materializing more projections means significant overhead during data ingestion.
