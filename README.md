@@ -108,7 +108,7 @@ It is possible to tune [configuration](pex_test_solution.yaml), e.g. amount of m
 
 Results (csv files) are generated into results/$hostname_from_config/$query_label.csv.
 
-Results and be copied into a sheet, then use "split to columns" feature.
+Results and be copied into a sheet, then use "split text to columns" feature.
 
 
 ## Investigation
